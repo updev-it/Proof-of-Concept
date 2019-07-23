@@ -1,0 +1,65 @@
+package app.models.converters;
+
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
+import app.models.ActuatorFunctionalities;
+import app.models.ActuatorFunctionality;
+import app.models.RelayFunctionality;
+import app.models.ThermostatFunctionality;
+
+/**
+ * ActuatorFunctionalitiesConverter
+ */
+public class ActuatorFunctionalitiesConverter implements Converter {
+
+    @SuppressWarnings("rawtypes")
+    public boolean canConvert(Class clazz) {
+        return ActuatorFunctionalities.class == clazz;
+    }
+
+    public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        ActuatorFunctionalities actuatorFunctionalities = (ActuatorFunctionalities) object;
+        for (ActuatorFunctionality actuatorFunctionality : actuatorFunctionalities) {
+            if (actuatorFunctionality.getClass() == ThermostatFunctionality.class) {
+                ThermostatFunctionality thermostatFunctionality = (ThermostatFunctionality) actuatorFunctionality;                
+                writer.startNode("thermostat_functionality");
+                // writer.addAttribute("id", thermostatFunctionality.getId());
+                context.convertAnother(thermostatFunctionality);
+                // // context.convertAnother(thermostatFunctionality.getType());
+                // // context.convertAnother(thermostatFunctionality.getUpperBound());
+                writer.endNode();
+            } else if (actuatorFunctionality.getClass() == RelayFunctionality.class) {
+                RelayFunctionality relayFunctionality = (RelayFunctionality) actuatorFunctionality;
+                writer.startNode("relay_functionality");
+                writer.addAttribute("id", relayFunctionality.getId());
+                // context.convertAnother(relayFunctionality);
+                writer.endNode();
+            } else {
+                continue;
+            }
+        }
+    }
+
+    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        ActuatorFunctionalities actuatorFunctionalities = new ActuatorFunctionalities();
+        while (reader.hasMoreChildren()) {
+            reader.moveDown();
+            String nodeName = reader.getNodeName();
+            switch (nodeName.toLowerCase()) {
+            case "thermostat_functionality":
+                actuatorFunctionalities.add(new ThermostatFunctionality(reader.getAttribute("id")));
+                break;
+            case "relay_functionality":
+                actuatorFunctionalities.add(new RelayFunctionality(reader.getAttribute("id")));
+                break;
+            }
+            reader.moveUp();
+        }
+        return actuatorFunctionalities;
+
+    }
+}
