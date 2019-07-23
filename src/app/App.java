@@ -2,6 +2,11 @@ package app;
 
 import java.io.BufferedOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
@@ -13,6 +18,7 @@ import app.models.Location;
 import app.models.Locations;
 import app.models.RelayFunctionality;
 import app.models.ThermostatFunctionality;
+import app.models.converters.AppliancesConverter;
 import app.models.converters.SelfClosingTagConverter;
 
 public class App {
@@ -26,14 +32,15 @@ public class App {
         xstream.processAnnotations(Locations.class);
         xstream.processAnnotations(ThermostatFunctionality.class);
         xstream.processAnnotations(RelayFunctionality.class);
-        xstream.registerConverter(new SelfClosingTagConverter(xstream.getMapper()));
+        xstream.registerConverter(new AppliancesConverter());
+        // xstream.registerConverter(new SelfClosingTagConverter(xstream.getMapper()));
 
         Locations locations1 = new Locations();
         Location location1 = new Location("location1_id", "woonkamer");
-        Appliance appliance1 = new Appliance("appliance1_id");
-        Appliance appliance2 = new Appliance("appliance2_id");
-        location1.addAppiance(appliance1);
-        location1.addAppiance(appliance2);
+        location1.addAppianceId("appliance1_id");
+        location1.addAppianceId("appliance2_id");
+        // location1.addAppiance(appliance1);
+        // location1.addAppiance(appliance2);
         locations1.addLocation(location1);
 
         String xml1 = xstream.toXML(locations1);
@@ -51,7 +58,9 @@ public class App {
 
         System.out.println();
 
+        // System.out.println(xml1r);
+
         BufferedOutputStream stdout = new BufferedOutputStream(System.out);
-        xstream.marshal(locations1, new PrettyPrintWriter(new OutputStreamWriter(stdout), customCoder));
+        xstream.marshal(locations1r, new PrettyPrintWriter(new OutputStreamWriter(stdout), customCoder));
     }
 }

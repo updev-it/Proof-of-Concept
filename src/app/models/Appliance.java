@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 public class Appliance {
     @XStreamAsAttribute
     private String id;
-    
+
     public Appliance(String id) {
         this.id = id;
     }

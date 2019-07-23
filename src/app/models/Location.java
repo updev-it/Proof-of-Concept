@@ -3,8 +3,12 @@ package app.models;
 import java.util.ArrayList;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAliasType;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.converters.collections.CollectionConverter;
+
+import app.models.converters.AppliancesConverter;
 
 /**
  * Location
@@ -17,7 +21,9 @@ public class Location {
     private String name;
 
     @XStreamAlias("appliances")
-    private ArrayList<Appliance> applianceList = new ArrayList<Appliance>();
+    private ApplianceList applianceList = new ApplianceList();
+    // private ArrayList<Appliance> applianceList = new ArrayList<Appliance>();
+    
 
     @XStreamAlias("actuator_functionalities")
     private ActuatorFunctionalities actuatorFunctionalities;
@@ -29,7 +35,11 @@ public class Location {
         this.actuatorFunctionalities = new ActuatorFunctionalities();
     }
 
-    public void addAppiance(Appliance appliance) {
-        this.applianceList.add(appliance);
+    public void addAppianceId(String applianceId) {
+        this.applianceList.add(applianceId);
     }
+
+    // public void addAppiance(Appliance appliance) {
+    //     this.applianceList.add(appliance);
+    // }
 }
