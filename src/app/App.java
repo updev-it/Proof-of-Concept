@@ -15,8 +15,6 @@ import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 
 import app.models.Location;
 import app.models.Locations;
-import app.models.RelayFunctionality;
-import app.models.ThermostatFunctionality;
 import app.models.converters.AppliancesConverter;
 
 public class App {
@@ -28,8 +26,8 @@ public class App {
         xstream = new XStream(new StaxDriver(customCoder));
         xstream.ignoreUnknownElements();
         xstream.processAnnotations(Locations.class);
-        xstream.processAnnotations(ThermostatFunctionality.class);
-        xstream.processAnnotations(RelayFunctionality.class);
+        // xstream.processAnnotations(ThermostatFunctionality.class);
+        // xstream.processAnnotations(RelayFunctionality.class);
         xstream.registerConverter(new AppliancesConverter());
         // xstream.registerConverter(new ActuatorFunctionalitiesConverter());
         // xstream.registerConverter(new SelfClosingTagConverter(xstream.getMapper()));

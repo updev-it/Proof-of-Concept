@@ -1,27 +1,25 @@
 package app.models.converters;
 
-import java.util.ArrayList;
-
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+import app.models.ApplianceList;
+
 /**
- * AppliancesConverterNew
+ * AppliancesConverter
  */
 public class AppliancesConverter implements Converter {
 
     @SuppressWarnings("rawtypes")
     public boolean canConvert(Class clazz) {
-        return clazz.equals(ArrayList.class);
+        return ApplianceList.class == clazz;
     }
 
-    @SuppressWarnings("unchecked")
     public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
-        ArrayList<String> applianceList = (ArrayList<String>) object;
-
+        ApplianceList applianceList = (ApplianceList) object;
         for (String appliance : applianceList) {
             writer.startNode("appliance");
             writer.addAttribute("id", appliance);
@@ -30,7 +28,7 @@ public class AppliancesConverter implements Converter {
     }
 
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        ArrayList<String> applianceList = new ArrayList<String>();
+        ApplianceList applianceList = new ApplianceList();
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             String nodeName = reader.getNodeName();

@@ -1,5 +1,6 @@
 package app.models;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAliasType;
 
 /**
@@ -7,7 +8,9 @@ import com.thoughtworks.xstream.annotations.XStreamAliasType;
  */
 @XStreamAliasType("actuator_functionalities")
 public class ActuatorFunctionalities {
+    @XStreamAlias("thermostat_functionality")
     private ThermostatFunctionality thermostatFunctionality;
+    @XStreamAlias("relay_functionality")
     private RelayFunctionality relayFunctionality;
 
     public ThermostatFunctionality getThermostatFunctionality() {

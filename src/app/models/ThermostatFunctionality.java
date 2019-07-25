@@ -5,7 +5,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 /**
  * ThermostatFunctionality
  */
-@XStreamAlias("thermostat_functionality")
 public class ThermostatFunctionality extends ActuatorFunctionality {
 
     private String type;

@@ -11,7 +11,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 
 import app.models.converters.AppliancesConverter;
-import app.models.converters.AppliancesConverterNew;
 
 /**
  * Location
@@ -27,7 +26,7 @@ public class Location {
     // private ApplianceList applianceList = new ApplianceList();
 
     @XStreamAlias("appliances")
-    @XStreamConverter(AppliancesConverterNew.class)
+    @XStreamConverter(AppliancesConverter.class)
     private ArrayList<String> applianceList = new ArrayList<String>();
         
     @XStreamAlias("actuator_functionalities")
