@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 /**
- * AppliancesConverterNew
+ * AppliancesConverter
  */
 public class AppliancesConverter implements Converter {
 
