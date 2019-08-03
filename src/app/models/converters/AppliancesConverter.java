@@ -34,7 +34,12 @@ public class AppliancesConverter implements Converter {
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             String nodeName = reader.getNodeName();
-            if ("appliance".equalsIgnoreCase(nodeName)) {                
+            if ("appliance".equalsIgnoreCase(nodeName)) {
+                // Note: Attributes will always have to be written and read first.
+                // You work on a stream and accessing the value of a tag or its members will close the surrounding tag
+                // (that is still active when the method is called).
+                //
+                // See: http://x-stream.github.io/converter-tutorial.html#ComplexConverter
                 applianceList.add(reader.getAttribute("id"));
             }
 

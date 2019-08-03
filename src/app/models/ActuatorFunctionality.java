@@ -1,5 +1,6 @@
 package app.models;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
@@ -9,17 +10,15 @@ public abstract class ActuatorFunctionality {
     @XStreamAsAttribute
     private String id;
 
-    private String testString;
-
-    private String updated_date;
+    @XStreamAlias("updated_date")
+    private String updatedDate;
 
     public ActuatorFunctionality(String id) {
-        this.id = id;
-        this.testString = "test";
+        this.id = id;        
     }
 
     public void setUpdatedDate(String updatedDate) {
-        this.updated_date = updatedDate;
+        this.updatedDate = updatedDate;
     }
 
     public String getId() {

@@ -2,11 +2,6 @@ package app;
 
 import java.io.BufferedOutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
@@ -15,10 +10,15 @@ import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 
 import app.models.Location;
 import app.models.Locations;
+import app.models.LogEntry;
+import app.models.LogEntryPeriod;
+import app.models.Measurement;
+import app.models.Thermometer;
 import app.models.RelayFunctionality;
 import app.models.ThermostatFunctionality;
 import app.models.converters.AppliancesConverter;
 import app.models.converters.LocationsConverter;
+import app.models.converters.LogEntriesConverter;
 
 public class App {
 
@@ -29,44 +29,76 @@ public class App {
         xstream = new XStream(new StaxDriver(customCoder));
         xstream.ignoreUnknownElements();
         xstream.processAnnotations(Locations.class);
-        // xstream.processAnnotations(ThermostatFunctionality.class);
-        // xstream.processAnnotations(RelayFunctionality.class);
         xstream.registerConverter(new AppliancesConverter());
-        // xstream.registerConverter(new LocationConverter());
-        //xstream.registerConverter(new LocationsConverter());
         xstream.registerConverter(new LocationsConverter());
-        // xstream.registerConverter(new ActuatorFunctionalitiesConverter());
-        // xstream.registerConverter(new SelfClosingTagConverter(xstream.getMapper()));
+        xstream.registerConverter(new LogEntriesConverter());
 
-        Locations locations1 = new Locations();
+        // Create locations object
+        Locations locations = new Locations();
+
+        // Create 2 locations (woonkamer & badkamer)
         Location location1 = new Location("location1_id", "woonkamer");
         Location location2 = new Location("location2_id", "badkamer");
+
+        // Add 2 appliances to location woonkamer
         location1.addAppianceId("appliance1_id");
         location1.addAppianceId("appliance2_id");
-        // location1.addAppiance(appliance1);
-        // location1.addAppiance(appliance2);
-        locations1.addLocation(location1);
-        locations1.addLocation(location2);
 
+        // Add 1 appliance to location badkamer
+        location2.addAppianceId("appliance3_id");
+
+        // Create 2 ActuatorFunctionalities (i.e. ThermostatFunctionality and
+        // RelayFunctionality)
         ThermostatFunctionality tfOne = new ThermostatFunctionality("thermostatid_1");
         RelayFunctionality rfOne = new RelayFunctionality("relayid_1");
 
+        // Configure ThermostatFunctionality
         tfOne.setUpdatedDate("2019-05-08T12:48:17.751+02:00");
         tfOne.setLowerBound("0");
         tfOne.setUpperBound("99.99");
         tfOne.setResolution("0.01");
         tfOne.setSetpoint("18.0");
         tfOne.setType("thermostat");
-        
+
+        // Configure RelayFunctionality
         rfOne.setUpdatedDate("");
 
-        
+        // Add the ActuatorFunctionalities to woonkamer and badkamer
         location1.addThermostatFunctionality(tfOne);
-        location1.addRelayFunctionality(rfOne);
+        location2.addRelayFunctionality(rfOne);
 
-        String xml1 = xstream.toXML(locations1);
-        Locations locations1r = (Locations) xstream.fromXML(xml1);
-        String xml1r = xstream.toXML(locations1r);
+        // Add log entries to woonkamer
+        LogEntry logEntry1 = new LogEntry("2a4be3ab8f464f529e24a9c8aff110e1", "C", new Double("6.67"));
+        LogEntryPeriod logEntryPeriod1 = new LogEntryPeriod("2019-08-03T11:30:46.147+02:00",
+                "2019-08-03T11:30:46.147+02:00");
+        Measurement measurement1 = new Measurement("24.8");
+        measurement1.setLogDate("2019-08-03T11:30:46.147+02:00");
+        logEntryPeriod1.addMeasurement(measurement1);
+        logEntry1.setUpdatedDate("2019-08-03T11:30:46.147+02:00");
+        logEntry1.setThermometer(new Thermometer("ee8de50451f1441583388626a044bc1f"));
+        logEntry1.setLogEntryPeriod(logEntryPeriod1);
+        location1.addLogEntry(logEntry1);
+
+        // Add log entries to badkamer
+        LogEntry logEntry2 = new LogEntry("b65a260dbfba4081b1c35ed3b699370b", "F", new Double("103.5"));
+        logEntry2.setUpdatedDate("2019-08-03T11:30:46.147+02:00");
+        logEntry2.setThermometer(new Thermometer("ee8de50451f1441583388626a044bc1f"));
+        logEntry2.setLogEntryPeriod(
+                new LogEntryPeriod("2019-08-03T11:30:46.147+02:00", "2019-08-03T11:30:46.147+02:00"));
+        location2.addLogEntry(logEntry2);
+
+        // Add both locations to the root locations object
+        locations.addLocation(location1);
+        locations.addLocation(location2);
+
+        String xml1 = xstream.toXML(locations);
+        Locations locations_r = (Locations) xstream.fromXML(xml1);
+        String xml1r = xstream.toXML(locations_r);
+
+        // System.out.println(xml1);
+
+        BufferedOutputStream stdout = new BufferedOutputStream(System.out);
+        xstream.marshal(locations_r, new PrettyPrintWriter(new OutputStreamWriter(stdout), customCoder));
 
         System.out.println();
         System.out.println("===============================");
@@ -78,10 +110,5 @@ public class App {
         }
 
         System.out.println();
-
-        System.out.println(xml1);
-
-        BufferedOutputStream stdout = new BufferedOutputStream(System.out);
-        xstream.marshal(locations1r, new PrettyPrintWriter(new OutputStreamWriter(stdout), customCoder));
     }
 }

@@ -1,17 +1,19 @@
 package app.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 import app.models.converters.AppliancesConverter;
+import app.models.converters.LogEntriesConverter;
 
 /**
  * Location
  */
-@XStreamAlias("location")
 public class Location {
     @XStreamAsAttribute
     private String id;
@@ -24,6 +26,10 @@ public class Location {
         
     @XStreamAlias("actuator_functionalities")
     private ActuatorFunctionalities actuatorFunctionalities = new ActuatorFunctionalities();
+
+    @XStreamAlias("logs")
+    @XStreamConverter(LogEntriesConverter.class)
+    private Map<String, LogEntry> logEntries = new HashMap<String, LogEntry>();
 
     public Location(String id) {
         this.id = id;
@@ -56,6 +62,22 @@ public class Location {
 
     public void addRelayFunctionality(RelayFunctionality relayFunctionality) {
         this.actuatorFunctionalities.setRelayFunctionality(relayFunctionality);
+    }
+
+    public void addLogEntry(LogEntry entry) {
+        this.logEntries.put(entry.getId(), entry);
+    }
+
+    public LogEntry getLogEntry(String id) {
+        return this.logEntries.get(id);
+    }
+
+    public Map<String, LogEntry> getLogEntries() {
+        return this.logEntries;
+    }
+
+    public void setLogEntries(Map<String, LogEntry> logEntries) {
+        this.logEntries = logEntries;
     }
 
     public String getName() {

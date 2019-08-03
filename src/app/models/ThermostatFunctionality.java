@@ -1,7 +1,5 @@
 package app.models;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
  * ThermostatFunctionality
  */
