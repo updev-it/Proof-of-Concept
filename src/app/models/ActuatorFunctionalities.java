@@ -1,17 +1,20 @@
 package app.models;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAliasType;
 
 /**
  * ActuatorFunctionalities
  */
-@XStreamAliasType("actuator_functionalities")
 public class ActuatorFunctionalities {
+    
     @XStreamAlias("thermostat_functionality")
     private ThermostatFunctionality thermostatFunctionality;
+
     @XStreamAlias("relay_functionality")
     private RelayFunctionality relayFunctionality;
+
+    @XStreamAlias("offset_functionality")
+    private OffsetFunctionality offsetFunctionality;
 
     public ThermostatFunctionality getThermostatFunctionality() {
         return thermostatFunctionality;
@@ -27,5 +30,13 @@ public class ActuatorFunctionalities {
 
     public void setRelayFunctionality(RelayFunctionality relayFunctionality) {
         this.relayFunctionality = relayFunctionality;
+    }
+
+    public OffsetFunctionality getOffsetFunctionality() {
+        return offsetFunctionality;
+    }
+
+    public void setOffsetFunctionality(OffsetFunctionality offsetFunctionality) {
+        this.offsetFunctionality = offsetFunctionality;
     }
 }

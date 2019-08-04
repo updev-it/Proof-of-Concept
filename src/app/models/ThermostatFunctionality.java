@@ -6,10 +6,10 @@ package app.models;
 public class ThermostatFunctionality extends ActuatorFunctionality {
 
     private String type;
-    private String setpoint;
-    private String lower_bound;
-    private String upper_bound;
-    private String resolution;
+    private Double setpoint;
+    private Double lower_bound;
+    private Double upper_bound;
+    private Double resolution;
 
     public ThermostatFunctionality(String id) {
         super(id);
@@ -23,35 +23,35 @@ public class ThermostatFunctionality extends ActuatorFunctionality {
         this.type = type;
     }
 
-    public String getSetpoint() {
+    public Double getSetpoint() {
         return setpoint;
     }
 
-    public void setSetpoint(String setpoint) {
+    public void setSetpoint(Double setpoint) {
         this.setpoint = setpoint;
     }
 
-    public String getLowerBound() {
+    public Double getLowerBound() {
         return lower_bound;
     }
 
-    public void setLowerBound(String lower_bound) {
+    public void setLowerBound(Double lower_bound) {
         this.lower_bound = lower_bound;
     }
 
-    public String getUpperBound() {
+    public Double getUpperBound() {
         return upper_bound;
     }
 
-    public void setUpperBound(String upper_bound) {
+    public void setUpperBound(Double upper_bound) {
         this.upper_bound = upper_bound;
     }
 
-    public String getResolution() {
+    public Double getResolution() {
         return resolution;
     }
 
-    public void setResolution(String resolution) {
+    public void setResolution(Double resolution) {
         this.resolution = resolution;
     }    
 }

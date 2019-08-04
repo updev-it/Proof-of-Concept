@@ -1,13 +1,5 @@
 package app;
 
-import java.io.BufferedOutputStream;
-import java.io.OutputStreamWriter;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
-
 import app.models.Location;
 import app.models.Locations;
 import app.models.LogEntry;
@@ -16,22 +8,12 @@ import app.models.Measurement;
 import app.models.Thermometer;
 import app.models.RelayFunctionality;
 import app.models.ThermostatFunctionality;
-import app.models.converters.AppliancesConverter;
-import app.models.converters.LocationsConverter;
-import app.models.converters.LogEntriesConverter;
+import app.models.xml.PlugwiseHAXml;
 
 public class App {
 
     public static void main(String[] args) throws Exception {
-        XStream xstream;
-        XmlFriendlyNameCoder customCoder = new XmlFriendlyNameCoder("_-", "_");
-
-        xstream = new XStream(new StaxDriver(customCoder));
-        xstream.ignoreUnknownElements();
-        xstream.processAnnotations(Locations.class);
-        xstream.registerConverter(new AppliancesConverter());
-        xstream.registerConverter(new LocationsConverter());
-        xstream.registerConverter(new LogEntriesConverter());
+        PlugwiseHAXml xstream = new PlugwiseHAXml();
 
         // Create locations object
         Locations locations = new Locations();
@@ -54,10 +36,10 @@ public class App {
 
         // Configure ThermostatFunctionality
         tfOne.setUpdatedDate("2019-05-08T12:48:17.751+02:00");
-        tfOne.setLowerBound("0");
-        tfOne.setUpperBound("99.99");
-        tfOne.setResolution("0.01");
-        tfOne.setSetpoint("18.0");
+        tfOne.setLowerBound(0.0);
+        tfOne.setUpperBound(99.99);
+        tfOne.setResolution(0.01);
+        tfOne.setSetpoint(18.0);
         tfOne.setType("thermostat");
 
         // Configure RelayFunctionality
@@ -97,8 +79,7 @@ public class App {
 
         // System.out.println(xml1);
 
-        BufferedOutputStream stdout = new BufferedOutputStream(System.out);
-        xstream.marshal(locations_r, new PrettyPrintWriter(new OutputStreamWriter(stdout), customCoder));
+        xstream.prettyPrint(locations_r);
 
         System.out.println();
         System.out.println("===============================");

@@ -40,16 +40,6 @@ public class MeasurementsConverter implements Converter {
                 System.out.println(e.toString());
             }
         }
-
-        // try {
-        //     // writer.startNode("measurement");
-        //     writer.addAttribute("log_date", measurement.getLogDate());
-        //     writer.setValue(measurement.getValue().toString());            
-        //     // writer.endNode();
-        // } catch (StreamException e) {
-        //     System.out.println(e.toString());
-        // }
-
     }
 
     @Override
