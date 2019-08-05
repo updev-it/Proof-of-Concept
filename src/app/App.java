@@ -51,6 +51,7 @@ public class App {
 
         // Add log entries to woonkamer
         LogEntry logEntry1 = new LogEntry("2a4be3ab8f464f529e24a9c8aff110e1", "C", new Double("6.67"));
+        LogEntry logEntry3 = new LogEntry("test", "C", new Double("61.67"));
         LogEntryPeriod logEntryPeriod1 = new LogEntryPeriod("2019-08-03T11:30:46.147+02:00",
                 "2019-08-03T11:30:46.147+02:00");
         Measurement measurement1 = new Measurement("24.8");
@@ -60,6 +61,7 @@ public class App {
         logEntry1.setThermometer(new Thermometer("ee8de50451f1441583388626a044bc1f"));
         logEntry1.setLogEntryPeriod(logEntryPeriod1);
         location1.addLogEntry(logEntry1);
+        location1.addLogEntry(logEntry3);
 
         // Add log entries to badkamer
         LogEntry logEntry2 = new LogEntry("b65a260dbfba4081b1c35ed3b699370b", "F", new Double("103.5"));
@@ -70,14 +72,14 @@ public class App {
         location2.addLogEntry(logEntry2);
 
         // Add both locations to the root locations object
-        locations.addLocation(location1);
-        locations.addLocation(location2);
+        locations.put(location1.getId(), location1);
+        locations.put(location2.getId(), location2);
 
         String xml1 = xstream.toXML(locations);
         Locations locations_r = (Locations) xstream.fromXML(xml1);
         String xml1r = xstream.toXML(locations_r);
 
-        // System.out.println(xml1);
+        System.out.println(xml1);
 
         xstream.prettyPrint(locations_r);
 

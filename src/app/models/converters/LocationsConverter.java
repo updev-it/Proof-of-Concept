@@ -31,7 +31,7 @@ public class LocationsConverter implements Converter {
     public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
         Locations locations = (Locations) object;
 
-        for (Map.Entry<String, Location> location : locations.getLocations().entrySet()) {
+        for (Map.Entry<String, Location> location : locations.entrySet()) {
             Location currentLocation = location.getValue();
             try {
                 writer.startNode("location");
@@ -77,7 +77,7 @@ public class LocationsConverter implements Converter {
                     }
                     reader.moveUp();
                 }
-                locations.addLocation(loc);
+                locations.put(loc.getId(), loc);
             }
 
             reader.moveUp();

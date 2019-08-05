@@ -13,16 +13,18 @@ import app.models.converters.LocationsConverter;
  */
 @XStreamAlias("locations")
 @XStreamConverter(LocationsConverter.class)
-public class Locations {
+public class Locations extends HashMap<String, Location> {
 
-    @XStreamAlias("location")
-    private Map<String, Location> locationList = new HashMap<String, Location>();
+    private static final long serialVersionUID = 1L;
 
-    public void addLocation(Location location) {
-        this.locationList.put(location.getId(), location);
-    }
+    // @XStreamAlias("location")
+    // private Map<String, Location> locationList = new HashMap<String, Location>();
 
-    public Map<String, Location> getLocations() {
-        return this.locationList;
-    }
+    // public void addLocation(Location location) {
+    //     this.locationList.put(location.getId(), location);
+    // }
+
+    // public Map<String, Location> getLocations() {
+    //     return this.locationList;
+    // }
 }
