@@ -11,33 +11,31 @@ import app.models.converters.LogEntryPeriodConverter;
  * LogEntry
  */
 @XStreamAlias("point_log")
-public class LogEntry {
+public abstract class LogEntry {
 
     @XStreamOmitField
     @XStreamAsAttribute
     private String id;
 
     private String type;
-    private Double temperature;
+    private String unit;
+    
+    @XStreamAlias("last_consecutive_log_date")
+    private String lastConsecutiveLogDate;
+    @XStreamAlias("updated_date")
+    private String updatedDate;   
 
     @XStreamAlias("period")    
     @XStreamConverter(LogEntryPeriodConverter.class)
     private LogEntryPeriod period;
-
-    @XStreamAlias("thermo_meter")
-    private Thermometer thermometer;
-
-    @XStreamAlias("updated_date")
-    private String updatedDate;   
-
+ 
     public LogEntry(String id) {
         this.id = id;
     }
 
-    public LogEntry(String id, String type, Double temperature) {
+    public LogEntry(String id, String type) {
         this.id = id;
-        this.type = type;
-        this.temperature = temperature;
+        this.type = type;        
     }  
 
     public String getId() {
@@ -56,14 +54,6 @@ public class LogEntry {
         this.type = type;
     }
 
-    public Double getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(Double temperature) {
-        this.temperature = temperature;
-    }
-
     public String getUpdatedDate() {
         return updatedDate;
     }
@@ -72,19 +62,35 @@ public class LogEntry {
         this.updatedDate = updatedDate;
     }
 
-    public Thermometer getThermometer() {
-        return thermometer;
-    }
-
-    public void setThermometer(Thermometer thermometer) {
-        this.thermometer = thermometer;
-    }
-
     public LogEntryPeriod getLogEntryPeriod() {
         return this.period;
     }
 
     public void setLogEntryPeriod(LogEntryPeriod logEntryPeriod) {
         this.period = logEntryPeriod;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public String getLastConsecutiveLogDate() {
+        return lastConsecutiveLogDate;
+    }
+
+    public void setLastConsecutiveLogDate(String lastConsecutiveLogDate) {
+        this.lastConsecutiveLogDate = lastConsecutiveLogDate;
+    }
+
+    public LogEntryPeriod getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(LogEntryPeriod period) {
+        this.period = period;
     }
 }

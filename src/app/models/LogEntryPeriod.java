@@ -1,8 +1,5 @@
 package app.models;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -20,7 +17,8 @@ public class LogEntryPeriod {
     @XStreamAlias("end_date")
     private String endDate;
 
-    private Map<String, Measurement> measurementList = new HashMap<String, Measurement>();
+    private Measurement measurement;
+    // private Map<String, Measurement> measurementList = new HashMap<String, Measurement>();
     
     public LogEntryPeriod(String startDate, String endDate) {
         this.startDate = startDate;
@@ -43,15 +41,23 @@ public class LogEntryPeriod {
         this.endDate = endDate;
     }
 
-    public Map<String, Measurement> getMeasurements() {
-        return this.measurementList;
+    public Measurement getMeasurement() {
+        return measurement;
     }
 
-    public void setMeasurement(Map<String, Measurement> measurements) {
-        this.measurementList = measurements;
+    public void setMeasurement(Measurement measurement) {
+        this.measurement = measurement;
     }
 
-    public void addMeasurement(Measurement measurement) {
-        this.measurementList.put(measurement.getLogDate(), measurement);
-    }
+    // public Map<String, Measurement> getMeasurements() {
+    //     return this.measurementList;
+    // }
+
+    // public void setMeasurement(Map<String, Measurement> measurements) {
+    //     this.measurementList = measurements;
+    // }
+
+    // public void addMeasurement(Measurement measurement) {
+    //     this.measurementList.put(measurement.getLogDate(), measurement);
+    // }
 }

@@ -28,19 +28,15 @@ public class LogEntryPeriodConverter implements Converter {
         LogEntryPeriod logEntryPeriod = (LogEntryPeriod) object;
 
         try {
-            Map<String, Measurement> measurementList = logEntryPeriod.getMeasurements();
+            Measurement measurement = logEntryPeriod.getMeasurement();
             writer.addAttribute("start_date", logEntryPeriod.getStartDate());
             writer.addAttribute("end_date", logEntryPeriod.getEndDate());
 
-            if (measurementList != null) {
-                for (Map.Entry<String, Measurement> measurement : measurementList.entrySet()) {
-                    Measurement currentMeasurement = measurement.getValue();
-                    String currentMeasurementLogDate = measurement.getKey();
-                    writer.startNode("measurement");
-                    writer.addAttribute("log_date", currentMeasurementLogDate);
-                    writer.setValue(currentMeasurement.getValue().toString());
-                    writer.endNode();
-                }
+            if (measurement != null) {
+                writer.startNode("measurement");
+                writer.addAttribute("log_date", measurement.getLogDate());
+                writer.setValue(measurement.getValue().toString());
+                writer.endNode();
             }
         } catch (StreamException e) {
             System.out.println(e.toString());
@@ -58,17 +54,18 @@ public class LogEntryPeriodConverter implements Converter {
 
             if ("measurement".equalsIgnoreCase(reader.getNodeName())) {
                 // Note: Attributes will always have to be written and read first.
-                // You work on a stream and accessing the value of a tag or its members will close the surrounding tag
+                // You work on a stream and accessing the value of a tag or its members will
+                // close the surrounding tag
                 // (that is still active when the method is called).
                 //
-                // See: http://x-stream.github.io/converter-tutorial.html#ComplexConverter 
+                // See: http://x-stream.github.io/converter-tutorial.html#ComplexConverter
                 String logDate = reader.getAttribute("log_date");
-                String value = reader.getValue();                
+                String value = reader.getValue();
 
-                Measurement measurement = new Measurement(value);                
+                Measurement measurement = new Measurement(value);
                 measurement.setLogDate(logDate);
 
-                logEntryPeriod.addMeasurement(measurement);
+                logEntryPeriod.setMeasurement(measurement);
             }
 
             reader.moveUp();

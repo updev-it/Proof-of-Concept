@@ -65,11 +65,11 @@ public class Location {
     }
 
     public void addLogEntry(LogEntry entry) {
-        this.logEntries.put(entry.getId(), entry);
+        this.logEntries.put(entry.getType(), entry);
     }
 
-    public LogEntry getLogEntry(String id) {
-        return this.logEntries.get(id);
+    public LogEntry getLogEntry(String type) {
+        return this.logEntries.get(type);
     }
 
     public Map<String, LogEntry> getLogEntries() {

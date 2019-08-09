@@ -13,9 +13,9 @@ import com.thoughtworks.xstream.io.StreamException;
 import app.models.Measurement;
 
 /**
- * MeasurementsConverter
+ * MeasurementConverter
  */
-public class MeasurementsConverter implements Converter {
+public class MeasurementConverter implements Converter {
 
     @Override
     @SuppressWarnings("rawtypes")
@@ -23,22 +23,17 @@ public class MeasurementsConverter implements Converter {
         return clazz.equals(HashMap.class);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
+    @Override    
     public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
-        Map<String, Measurement> measurementList = (Map<String, Measurement>) object;
+        Measurement measurement = (Measurement) object;
 
-        for (Map.Entry<String, Measurement> measurement : measurementList.entrySet()) {
-            Measurement currentMeasurement = measurement.getValue();
-            String currentMeasurementLogDate = measurement.getKey();
-            try {
-                writer.startNode("measurement");
-                writer.addAttribute("log_date", currentMeasurementLogDate);
-                writer.setValue(currentMeasurement.getValue().toString());                
-                writer.endNode();
-            } catch (StreamException e) {
-                System.out.println(e.toString());
-            }
+        try {
+            writer.startNode("measurement");
+            writer.addAttribute("log_date", measurement.getLogDate());
+            writer.setValue(measurement.getValue().toString());
+            writer.endNode();
+        } catch (StreamException e) {
+            System.out.println(e.toString());
         }
     }
 

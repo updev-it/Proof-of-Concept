@@ -12,6 +12,7 @@ import com.thoughtworks.xstream.io.StreamException;
 
 import app.models.LogEntry;
 import app.models.LogEntryPeriod;
+import app.models.LogEntryTemperature;
 import app.models.Thermometer;
 
 /**
@@ -21,7 +22,7 @@ public class LogEntriesConverter implements Converter {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public boolean canConvert(Class clazz) {        
+    public boolean canConvert(Class clazz) {
         return clazz.equals(HashMap.class);
     }
 
@@ -31,15 +32,27 @@ public class LogEntriesConverter implements Converter {
         Map<String, LogEntry> logEntries = (Map<String, LogEntry>) object;
 
         for (Map.Entry<String, LogEntry> logEntry : logEntries.entrySet()) {
-            LogEntry currentLogEntry = logEntry.getValue();
-            String currentLogEntryId = logEntry.getKey();
-            try {
-                writer.startNode("point_log");
-                writer.addAttribute("id", currentLogEntryId);
-                context.convertAnother(currentLogEntry);
-                writer.endNode();
-            } catch (StreamException e) {
-                System.out.println(e.toString());
+            String type = logEntry.getKey();
+            String currentLogEntryId = logEntry.getValue().getId();
+            LogEntry currentLogEntry = null;
+
+            switch (type) {
+            case "temperature":
+                currentLogEntry = (LogEntryTemperature) logEntry.getValue();
+                break;
+            default:
+                break;
+            }
+
+            if (currentLogEntry != null) {
+                try {
+                    writer.startNode("point_log");
+                    writer.addAttribute("id", currentLogEntryId);
+                    context.convertAnother(currentLogEntry);
+                    writer.endNode();
+                } catch (StreamException e) {
+                    System.out.println(e.toString());
+                }
             }
         }
     }
@@ -50,40 +63,48 @@ public class LogEntriesConverter implements Converter {
 
         while (reader.hasMoreChildren()) {
             reader.moveDown();
-            
+
             if ("point_log".equalsIgnoreCase(reader.getNodeName())) {
                 // Note: Attributes will always have to be written and read first.
-                // You work on a stream and accessing the value of a tag or its members will close the surrounding tag
+                // You work on a stream and accessing the value of a tag or its members will
+                // close the surrounding tag
                 // (that is still active when the method is called).
                 //
                 // See: http://x-stream.github.io/converter-tutorial.html#ComplexConverters
                 String id = reader.getAttribute("id");
-                LogEntry entry = new LogEntry(id);
+                LogEntry logEntry = null;
+                LogEntryPeriod logEntryPeriod = null;
+                Map<String, String> rawLogEntry = new HashMap<String, String>();
+
                 while (reader.hasMoreChildren()) {
                     reader.moveDown();
-                    switch (reader.getNodeName().toLowerCase()) {
-                    case "type":
-                        entry.setType((String) context.convertAnother(reader, String.class));
-                        break;
-                    case "temperature":
-                        entry.setTemperature((Double) context.convertAnother(reader, Double.class));
-                        break;
-                    case "thermo_meter":
-                        entry.setThermometer((Thermometer) context.convertAnother(reader, Thermometer.class));
-                        break;
-                    case "updated_date":
-                        entry.setUpdatedDate((String) context.convertAnother(reader, String.class));
-                        break;
-                    case "period":
-                        // entry.setLogEntryPeriod((LogEntryPeriod) new LogEntryPeriodConverter().unmarshal(reader, context));
-                        entry.setLogEntryPeriod((LogEntryPeriod) context.convertAnother(reader, LogEntryPeriod.class, new LogEntryPeriodConverter()));
-                        break;
+
+                    String nodeName = reader.getNodeName().toLowerCase();
+                    if (nodeName.equals("period")) {
+                        logEntryPeriod = (LogEntryPeriod) context.convertAnother(rawLogEntry.get("period"),
+                                LogEntryPeriod.class, new LogEntryPeriodConverter());
+                    } else {
+                        rawLogEntry.put(nodeName, (String) context.convertAnother(reader, String.class));
                     }
                     reader.moveUp();
                 }
-                logEntries.put(entry.getId(), entry);
-            }
 
+                String type = rawLogEntry.get("type");
+                if (type != null && !type.isEmpty()) {
+                    switch (type) {
+                    case "temperature":
+                        logEntry = new LogEntryTemperature(id);
+                        logEntry.setUpdatedDate(rawLogEntry.get("updated_date"));
+                        logEntry.setLogEntryPeriod(logEntryPeriod);
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                if (logEntry != null) {
+                    logEntries.put(logEntry.getType(), logEntry);
+                }
+            }
             reader.moveUp();
         }
         return logEntries;
