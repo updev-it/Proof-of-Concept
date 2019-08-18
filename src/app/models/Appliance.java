@@ -11,6 +11,8 @@ public class Appliance {
     @XStreamAsAttribute
     private String id;
 
+    private String name;
+
     public Appliance(String id) {
         this.id = id;
     }

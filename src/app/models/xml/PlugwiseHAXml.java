@@ -1,16 +1,18 @@
 package app.models.xml;
 
 import java.io.BufferedOutputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 
+import app.models.Location;
 import app.models.Locations;
 import app.models.converters.AppliancesConverter;
+import app.models.converters.LocationConverter;
 import app.models.converters.LocationsConverter;
 import app.models.converters.LogEntriesConverter;
 
@@ -34,9 +36,10 @@ public class PlugwiseHAXml extends XStream {
         this.ignoreUnknownElements();
 
         // Register custom converters
-        this.registerConverter(new AppliancesConverter());
+        // this.registerConverter(new AppliancesConverter());
         this.registerConverter(new LocationsConverter());
-        this.registerConverter(new LogEntriesConverter());
+        this.registerConverter(new LocationConverter());
+        // this.registerConverter(new LogEntriesConverter());
 
         // Process annotations
         this.processAnnotations(Locations.class);
