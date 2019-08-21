@@ -8,7 +8,11 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 /**
@@ -16,19 +20,36 @@ import com.thoughtworks.xstream.mapper.Mapper;
  */
 public abstract class BaseConverter<T> extends MapConverter implements Converter {
 
-    protected Class<?> cls;
+    protected Class<?> cls = null;
     protected Map<String, Field> aliasedFields = new HashMap<String, Field>();
+    protected String attributeName;
 
     // protected final Logger logger;
 
-    public BaseConverter(Mapper mapper) {
-        super(mapper);
-        this.cls = (Class<?>) (((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+    public BaseConverter(Mapper mapper, Class<?> clazz) {
+        super(mapper, clazz);
+
         // this.controller = controller;
         // this.logger = LoggerFactory.getLogger(this.cls);
 
         initialize();
     }
+
+    // @Override
+    // public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+    //     try {
+    //         T map = (T) this.cls.newInstance();
+
+    //         populateMap(reader, context, map);
+
+    //         return map;
+    //     } catch (Exception e) {
+    //         return null;
+    //     }
+
+    // }
+
+    // protected abstract void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, T map);
 
     public void assignClass(Class<?> clazz) {
         this.cls = clazz;
@@ -36,6 +57,7 @@ public abstract class BaseConverter<T> extends MapConverter implements Converter
     }
 
     private void initialize() {
+        this.cls = (Class<?>) (((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
         Map<String, Field> aliasedFields = getAnnotatedDeclaredFields(this.cls, XStreamAlias.class, true);
 
         aliasedFields.forEach((fieldName, field) -> {

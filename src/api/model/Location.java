@@ -1,5 +1,7 @@
 package api.model;
 
+import java.util.Optional;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -8,10 +10,24 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  */
 @XStreamAlias("location")
 public class Location {
-    
+
     @XStreamAsAttribute
-    public String id;
-    public String name;
-    public Appliances appliances;
-    public Logs logs;
+    private String id;
+
+    private String name;
+
+    private Appliances appliances;
+
+    private Logs logs;
+
+    @XStreamAlias("actuator_functionalities")
+    private ActuatorFunctionalities actuatorFunctionalities;
+
+    public Optional<Double> getTemperature() {                
+        return this.logs.getTemperature();
+    }
+
+    public Optional<Double> getThermostatTemperature() {                
+        return this.logs.getThermostatTemperature();
+    }
 }

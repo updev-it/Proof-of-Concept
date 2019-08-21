@@ -4,53 +4,48 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
+import api.model.LogBattery;
 import api.model.LogEntry;
 import api.model.LogEntryPeriod;
 import api.model.LogType;
 import api.model.LogTemperature;
-import api.model.Logs;
 
 /**
  * LogConverter
  */
 public class LogConverter extends BaseConverter<LogEntry> {
 
-    private final String attributeName;
+    // Constructor
 
     public LogConverter(Mapper mapper) {
-        this(mapper, null);
+        super(mapper, null);
     }
 
-    public LogConverter(Mapper mapper, String attributeName) {
-        super(mapper);
-
-        this.attributeName = attributeName;
-    }
+    // Overrides
 
     @Override
+    @SuppressWarnings("rawtypes")
     public boolean canConvert(Class cls) {
         return LogEntry.class.isAssignableFrom(cls);
     }
 
     @Override
-    public void marshal(Object arg0, HierarchicalStreamWriter arg1, MarshallingContext arg2) {
-        // super.marshal(arg0, arg1, arg2);
+    public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        // TODO super.marshal(object, writer, context);
     }
 
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        return populateStringMap(reader, context);
+        return populateMap(reader, context);
     }
 
-    protected LogType populateStringMap(HierarchicalStreamReader reader, UnmarshallingContext context) {
+    protected LogType populateMap(HierarchicalStreamReader reader, UnmarshallingContext context) {
 
         LogType logEntry = null;
         LogEntryPeriod logEntryPeriod = null;
@@ -72,12 +67,9 @@ public class LogConverter extends BaseConverter<LogEntry> {
         if (type != null && !type.isEmpty()) {
             switch (type) {
             case "battery":
-                // logEntry = new LogEntryBattery(id);
-                // this.assignClass(LogEntryBattery.class);
-                // // logEntry.setUpdatedDate(rawLogEntry.get("updated_date"));
-                // // logEntry.setLogEntryPeriod(logEntryPeriod);
-                // //
-                // logEntry.setLastConsecutiveLogDate(rawLogEntry.get("last_consecutive_log_date"));
+                this.assignClass(LogBattery.class);
+                logEntry = new LogBattery();
+                break;
             case "thermostat":
             case "uncorrected_temperature":
             case "temperature":
@@ -87,7 +79,7 @@ public class LogConverter extends BaseConverter<LogEntry> {
                 logEntry = new LogTemperature();
                 break;
             default:
-                logEntry = new LogEntry();
+                // logEntry = new LogEntry();
                 break;
             }
         }

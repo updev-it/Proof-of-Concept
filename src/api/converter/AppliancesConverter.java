@@ -12,7 +12,7 @@ import api.model.Appliances;
 /**
  * AppliancesConverter
  */
-public class AppliancesConverter extends MapConverter implements Converter {
+public class AppliancesConverter extends BaseConverter<Appliances> { // extends MapConverter implements Converter {
 
     private final String attributeName;
 
@@ -31,18 +31,22 @@ public class AppliancesConverter extends MapConverter implements Converter {
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         Appliances map = new Appliances();
 
-        populateStringMap(reader, context, map);
+        populateMap(reader, context, map);
 
         return map;
     }
 
-    protected void populateStringMap(HierarchicalStreamReader reader, UnmarshallingContext context, Appliances map) {
+    protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, Appliances map) {
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             String key = reader.getAttribute(this.attributeName);
-            Appliance value = (Appliance) readItem(reader, context, map);
+            Appliance appliance = (Appliance) readItem(reader, context, map);
+
+            if (appliance != null) {
+                map.put(key, appliance);
+            }
+
             reader.moveUp();
-            map.put(key, value);
         }
     }
 }

@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 import api.model.LogEntry;
@@ -18,21 +20,23 @@ import api.model.Logs;
  */
 public class LogsConverter extends MapConverter implements Converter {
 
-    private final String attributeName;
+    // Constructor
 
     public LogsConverter(Mapper mapper) {
-        this(mapper, null);
+        super(mapper, Logs.class);
     }
 
-    public LogsConverter(Mapper mapper, String attributeName) {
-        super(mapper, Logs.class);
+    // Overrides
 
-        this.attributeName = attributeName;
+    @Override
+    @SuppressWarnings("rawtypes")
+    public boolean canConvert(Class cls) {
+        return Logs.class.isAssignableFrom(cls);
     }
 
     @Override
-    public boolean canConvert(Class cls) {
-        return Logs.class.isAssignableFrom(cls);
+    public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        super.marshal(object, writer, context);
     }
 
     @Override
@@ -47,11 +51,14 @@ public class LogsConverter extends MapConverter implements Converter {
     protected void populateStringMap(HierarchicalStreamReader reader, UnmarshallingContext context, Logs map) {
         while (reader.hasMoreChildren()) {
             reader.moveDown();
-            if ("point_log".equalsIgnoreCase(reader.getNodeName())) {
-                LogType logEntry = (LogType) context.convertAnother(reader, LogEntry.class);
+            LogType logEntry = (LogType) context.convertAnother(reader, LogEntry.class);
+
+            if (logEntry != null) {
                 map.put(logEntry.getType(), logEntry);
             }
+
             reader.moveUp();
         }
     }
+
 }

@@ -1,5 +1,7 @@
 package api.model;
 
+import java.util.Optional;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -18,4 +20,8 @@ public class LogEntryPeriod {
     private String endDate;
 
     private String measurement;
+
+    public Optional<String> getMeasurement() {
+        return Optional.ofNullable(this.measurement);
+    }
 }

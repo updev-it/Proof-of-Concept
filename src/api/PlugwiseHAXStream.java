@@ -8,30 +8,33 @@ import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 
+import api.converter.ActuatorFunctionalitiesConverter;
 import api.converter.AppliancesConverter;
 import api.converter.LocationsConverter;
 import api.converter.LogConverter;
 import api.converter.LogsConverter;
+import api.model.ActuatorFunctionalityOffset;
+import api.model.ActuatorFunctionalityRelay;
+import api.model.ActuatorFunctionalityThermostat;
 import api.model.Appliances;
 import api.model.Locations;
 import api.model.LogEntryPeriod;
 
-
 /**
- * PlugwiseHAXml
+ * PlugwiseHAXStream
  */
-public class PlugwiseHAXml extends XStream {
+public class PlugwiseHAXStream extends XStream {
 
     private static XmlFriendlyNameCoder customCoder = new XmlFriendlyNameCoder("_-", "_");
 
-    public PlugwiseHAXml() {
-        super(new StaxDriver(PlugwiseHAXml.customCoder));
+    public PlugwiseHAXStream() {
+        super(new StaxDriver(PlugwiseHAXStream.customCoder));
 
         initialize();
     }
 
     // Protected methods
-    
+
     protected void initialize() {
         // Configure XStream
         this.ignoreUnknownElements();
@@ -40,13 +43,17 @@ public class PlugwiseHAXml extends XStream {
         // Register custom converters
         this.registerConverter(new LocationsConverter(this.getMapper(), "id"));
         this.registerConverter(new AppliancesConverter(this.getMapper(), "id"));
+        this.registerConverter(new ActuatorFunctionalitiesConverter(this.getMapper(), "id"));
         this.registerConverter(new LogsConverter(this.getMapper()));
         this.registerConverter(new LogConverter(this.getMapper()));
 
         // Process annotationsLocations
         this.processAnnotations(Locations.class);
         this.processAnnotations(LogEntryPeriod.class);
-        // this.processAnnotations(Appliances.class);        
+        this.processAnnotations(ActuatorFunctionalityThermostat.class);
+        this.processAnnotations(ActuatorFunctionalityRelay.class);
+        this.processAnnotations(ActuatorFunctionalityOffset.class);
+        
     }
 
     // Public methods
@@ -56,14 +63,14 @@ public class PlugwiseHAXml extends XStream {
     }
 
     @SuppressWarnings("rawtypes")
-    public Object fromXML(String xml, Class outClass) {        
+    public Object fromXML(String xml, Class outClass) {
         try {
             Class.forName(outClass.getName());
             super.processAnnotations(outClass);
             return fromXML(xml);
         } catch (ClassNotFoundException e) {
             return null;
-        }        
+        }
     }
 
     public String toXML(Object object) {
@@ -71,14 +78,14 @@ public class PlugwiseHAXml extends XStream {
     }
 
     @SuppressWarnings("rawtypes")
-    public String toXML(Object object, Class outClass) {        
+    public String toXML(Object object, Class outClass) {
         try {
             Class.forName(outClass.getName());
             super.processAnnotations(outClass);
             return toXML(object);
         } catch (Exception e) {
             return null;
-        }        
+        }
     }
 
     public void prettyPrint(Object object) {
@@ -87,6 +94,6 @@ public class PlugwiseHAXml extends XStream {
     }
 
     public void prettyPrint(Object object, OutputStreamWriter outputStreamWriter) {
-        this.marshal(object, new PrettyPrintWriter(outputStreamWriter, PlugwiseHAXml.customCoder));
+        this.marshal(object, new PrettyPrintWriter(outputStreamWriter, PlugwiseHAXStream.customCoder));
     }
 }
