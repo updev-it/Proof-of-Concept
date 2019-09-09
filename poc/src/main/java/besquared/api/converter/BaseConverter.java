@@ -20,7 +20,6 @@ public abstract class BaseConverter<T> extends MapConverter implements Converter
     protected Map<String, Field> aliasedFields = new HashMap<String, Field>();
     protected String attributeName;
 
-
     public BaseConverter(Mapper mapper, Class<?> clazz) {
         super(mapper, clazz);
 

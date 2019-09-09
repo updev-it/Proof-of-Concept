@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * CustomCollection
+ * PlugwiseHACollection
  */
-public abstract class CustomCollection<T> implements Map<String, T> {
+public abstract class PlugwiseHACollection<T> implements Map<String, T> {
 
     private Map<String, T> map = new HashMap<String,  T>();
 
@@ -71,4 +71,6 @@ public abstract class CustomCollection<T> implements Map<String, T> {
     public Set<Entry<String, T>> entrySet() {
         return this.map.entrySet();
     }
+
+    public abstract void merge(Map<String, T> map);
 }

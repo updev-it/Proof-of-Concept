@@ -1,8 +1,6 @@
 package besquared.api.converter;
 
-import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.converters.collections.MapConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.mapper.Mapper;
 
@@ -14,12 +12,8 @@ import besquared.api.model.Appliances;
  */
 public class AppliancesConverter extends BaseConverter<Appliances> { // extends MapConverter implements Converter {
 
-    private final String attributeName;
-
-    public AppliancesConverter(Mapper mapper, String attributeName) {
+    public AppliancesConverter(Mapper mapper) {
         super(mapper, Appliances.class);
-
-        this.attributeName = attributeName;
     }
 
     @Override
@@ -40,7 +34,7 @@ public class AppliancesConverter extends BaseConverter<Appliances> { // extends 
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             String key = reader.getAttribute(this.attributeName);
-            Appliance appliance = (Appliance) readItem(reader, context, map);
+            Appliance appliance = (Appliance) readBareItem(reader, context, map);
 
             if (appliance != null) {
                 map.put(key, appliance);

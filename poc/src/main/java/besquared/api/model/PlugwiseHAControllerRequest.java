@@ -62,16 +62,18 @@ public class PlugwiseHAControllerRequest<T> {
     private static final long TIMEOUT_SECONDS = 5;
 
     private final XStream xStream;
-    private final Transformer transformer;
     private final HttpClient httpClient;
     private final String host;
     private final int port;
     private final Class<T> resultType;
+    private final Transformer transformer;
 
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> queryParameters = new HashMap<>();
     private Object bodyParameter = null;
     private String path = "/";
+
+    private String serverDateTime;
 
     // Constructor
 
@@ -86,6 +88,7 @@ public class PlugwiseHAControllerRequest<T> {
 
         setHeader(HttpHeader.ACCEPT.toString(), CONTENT_TYPE_TEXT_XML);
 
+        // Create Basic Auth header if username and password are supplied
         if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
             setHeader(HttpHeader.AUTHORIZATION.toString(),
                     "Basic " + B64Code.encode(String.format("%s:%s", username, password), StringUtil.__ISO_8859_1));
@@ -110,8 +113,16 @@ public class PlugwiseHAControllerRequest<T> {
         this.headers.put(key, String.valueOf(value));
     }
 
+    public void addPathParameter(String key) {
+        this.path += String.format(";%s", key);
+    }
+
     public void addPathParameter(String key, Object value) {
         this.path += String.format(";%s=%s", key, value);
+    }
+
+    public void addPathFilter(String key, String operator, Object value) {
+        this.path += String.format(";%s:%s:%s", key, operator, value);
     }
 
     public void setQueryParameter(String key, Object value) {
@@ -120,6 +131,10 @@ public class PlugwiseHAControllerRequest<T> {
 
     public void setBodyParameter(Object body) {
         this.bodyParameter = body;
+    }
+
+    public String getServerDateTime() {
+        return this.serverDateTime;
     }
 
     @SuppressWarnings("unchecked")
@@ -138,7 +153,7 @@ public class PlugwiseHAControllerRequest<T> {
                 result = (T) this.xStream.fromXML(this.transformXML(xml));
             } else {
                 result = (T) this.xStream.fromXML(xml);
-            }            
+            }
         }
         return result;
     }
@@ -153,7 +168,7 @@ public class PlugwiseHAControllerRequest<T> {
                     new javax.xml.transform.stream.StreamResult(writer));
             return writer.toString();
         } catch (TransformerException e) {
-            throw new PlugwiseHAException(e);
+            throw new PlugwiseHAException("Could not apply XML stylesheet", e);
         }
     }
 
@@ -165,6 +180,7 @@ public class PlugwiseHAControllerRequest<T> {
         case HttpStatus.OK_200:
         case HttpStatus.ACCEPTED_202:
             content = response.getContentAsString();
+            System.out.println(content);
             break;
         case HttpStatus.BAD_REQUEST_400:
             throw new PlugwiseHAException("Bad request");
@@ -175,6 +191,9 @@ public class PlugwiseHAControllerRequest<T> {
         default:
             throw new PlugwiseHAException("Unknown HTTP status code " + status + " returned by the controller");
         }
+
+        this.serverDateTime = response.getHeaders().get("Date");
+
         return content;
     }
 

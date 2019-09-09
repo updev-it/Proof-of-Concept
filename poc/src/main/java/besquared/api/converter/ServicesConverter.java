@@ -1,43 +1,27 @@
 package besquared.api.converter;
 
-import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import besquared.api.model.Service;
-import besquared.api.model.ServiceType;
 import besquared.api.model.Services;
+import besquared.api.model.Service.ServiceIdType;
 
 /**
  * ServicesConverter
  */
-public class ServicesConverter extends BaseConverter<Services> {
-
-    private final String attributeName;
-
-    // Constructor
+public class ServicesConverter extends BaseConverter<Service> {
 
     public ServicesConverter(Mapper mapper) {
         super(mapper, Services.class);
-
-        this.attributeName = "id";
     }
-
-    // Overrides
 
     @Override
     @SuppressWarnings("rawtypes")
-    public boolean canConvert(Class cls) {
-        return Services.class.isAssignableFrom(cls);
-    }
-
-    @Override
-    public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
-        throw new NotImplementedException();
+    public boolean canConvert(Class type) {
+        return Services.class.isAssignableFrom(type);
     }
 
     @Override
@@ -53,11 +37,13 @@ public class ServicesConverter extends BaseConverter<Services> {
         while (reader.hasMoreChildren()) {
             reader.moveDown();
 
-            ServiceType service = (ServiceType) context.convertAnother(reader, ServiceType.class);
+            Service service = (Service) readBareItem(reader, context, map);
+            String serviceId = service.getServiceId();
 
-            map.put(service.getType(), service);
+            map.put(serviceId, service);
 
             reader.moveUp();
         }
     }
+
 }

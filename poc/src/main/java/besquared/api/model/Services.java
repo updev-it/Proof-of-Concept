@@ -1,11 +1,19 @@
 package besquared.api.model;
 
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Services
  */
-@XStreamAlias("services")
-public class Services extends CustomCollection<ServiceType> {
-    
+@XStreamAlias("Services")
+public class Services extends PlugwiseHACollection<Service> {
+
+    @Override
+    public void merge(Map<String, Service> services) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

@@ -1,7 +1,6 @@
 package besquared.api.model;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * Module
@@ -9,22 +8,34 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XStreamAlias("module")
 public class Module {
 
-    @XStreamAsAttribute
-    String id;
+    @XStreamAlias("id")
+    private String id;
 
-    String vendor_name;
+    @XStreamAlias("vendor_name")
+    private String vendorName;
 
-    String vendor_model;
+    @XStreamAlias("vendor_model")
+    private String vendorModel;
 
-    String hardware_version;
+    @XStreamAlias("hardware_version")
+    private String hardwareVersion;
 
-    String firmware_version;
+    @XStreamAlias("firmware_version")
+    private String firmwareVersion;
 
-    String created_date;
+    @XStreamAlias("created_date")
+    private String createdDate;
 
-    String modified_date;
+    @XStreamAlias("modified_date")
+    private String modifiedDate;
 
-    String deleted_date;
+    @XStreamAlias("deleted_date")
+    private String deletedDate;
 
-    Services services;
+    @XStreamAlias("services")
+    private Services services;
+
+    public String getId() {
+        return this.id;
+    }
 }

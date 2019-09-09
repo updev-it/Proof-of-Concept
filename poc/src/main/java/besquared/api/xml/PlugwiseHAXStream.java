@@ -6,18 +6,24 @@ import java.io.OutputStreamWriter;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.TraxSource;
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.security.NoTypePermission;
 import com.thoughtworks.xstream.security.NullPermission;
 
-import besquared.api.converter.ModulesConverter;
-import besquared.api.converter.ServiceConverter;
-import besquared.api.converter.ServicesConverter;
-import besquared.api.model.Module;
-import besquared.api.model.Modules;
-import besquared.api.model.Service;
-import besquared.api.model.Services;
+import besquared.api.converter.DateTimeConverter;
+import besquared.api.model.ActuatorFunctionalities;
+import besquared.api.model.ActuatorFunctionality;
+import besquared.api.model.ActuatorFunctionalityRelay;
+import besquared.api.model.ActuatorFunctionalityThermostat;
+import besquared.api.model.Appliance;
+import besquared.api.model.Appliances;
+import besquared.api.model.Location;
+import besquared.api.model.Locations;
+import besquared.api.model.GatewayInfo;
+import besquared.api.model.DomainObjects;
+import besquared.api.model.GatewayEnvironment;
+import besquared.api.model.Log;
+import besquared.api.model.Logs;
 
 /**
  * PlugwiseHAXStream
@@ -49,16 +55,23 @@ public class PlugwiseHAXStream extends XStream {
         this.addPermission(NoTypePermission.NONE);
         this.addPermission(NullPermission.NULL);
 
-        // Whitelist classes
-        this.allowClass(Modules.class);
-        this.allowClass(Module.class);
-        this.allowClass(Services.class);
-        this.allowClass(Service.class);
+        // Whitelist classes   
+        this.allowClass(GatewayInfo.class);
+        this.allowClass(GatewayEnvironment.class);        
+        this.allowClass(Appliances.class);
+        this.allowClass(Appliance.class);
+        this.allowClass(Locations.class);
+        this.allowClass(Location.class);
+        this.allowClass(Logs.class);
+        this.allowClass(Log.class);
+        this.allowClass(ActuatorFunctionalities.class);
+        this.allowClass(ActuatorFunctionality.class);
+        this.allowClass(ActuatorFunctionalityThermostat.class);
+        this.allowClass(ActuatorFunctionalityRelay.class);
+        this.allowClass(DomainObjects.class);
 
         // Register custom converters
-        this.registerConverter(new ModulesConverter(this.getMapper()));
-        this.registerConverter(new ServicesConverter(this.getMapper()));        
-        // this.registerConverter(new ServiceConverter(this.getMapper()));
+        this.registerConverter(new DateTimeConverter());
     }
 
     // Public methods

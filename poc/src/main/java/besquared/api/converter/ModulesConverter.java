@@ -1,12 +1,8 @@
 package besquared.api.converter;
 
-import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
-
-import org.apache.commons.lang.NotImplementedException;
 
 import besquared.api.model.Module;
 import besquared.api.model.Modules;
@@ -14,29 +10,16 @@ import besquared.api.model.Modules;
 /**
  * ModulesConverter
  */
-public class ModulesConverter extends BaseConverter<Modules> {
-
-    private final String attributeName;
-
-    // Constructor
+public class ModulesConverter extends BaseConverter<Module> {
 
     public ModulesConverter(Mapper mapper) {
         super(mapper, Modules.class);
-
-        this.attributeName = "id";
     }
-
-    // Overrides
 
     @Override
     @SuppressWarnings("rawtypes")
-    public boolean canConvert(Class cls) {
-        return Modules.class.isAssignableFrom(cls);
-    }
-
-    @Override
-    public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
-        throw new NotImplementedException();
+    public boolean canConvert(Class type) {
+        return Modules.class.isAssignableFrom(type);
     }
 
     @Override
@@ -50,13 +33,13 @@ public class ModulesConverter extends BaseConverter<Modules> {
 
     protected void populateMap(HierarchicalStreamReader reader, UnmarshallingContext context, Modules map) {
         while (reader.hasMoreChildren()) {
-            reader.moveDown();
-            String key = reader.getAttribute(this.attributeName);
+            reader.moveDown();            
             Module module = (Module) readBareItem(reader, context, map);
 
-            map.put(key, module);
+            map.put(module.getId(), module);
 
             reader.moveUp();
         }
     }
+
 }

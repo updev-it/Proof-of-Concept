@@ -1,23 +1,22 @@
 package besquared.api.model;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 /**
  * ActuatorFunctionalityRelay
  */
 @XStreamAlias("relay_functionality")
-public class ActuatorFunctionalityRelay implements ActuatorFunctionalityType {
+public class ActuatorFunctionalityRelay extends ActuatorFunctionality {
 
-    @XStreamAsAttribute
-    private String id;
+    private String state;
+    private Boolean lock;
 
-    @XStreamAlias("updated_date")
-    
-    private String updatedDate;
+    public ActuatorFunctionalityRelay(String state) {
+        this.state = state;
+    }
 
-    public String getType() {
-        return "relay";
+    public ActuatorFunctionalityRelay(String state, Boolean lock) {
+        this.state = state;
+        this.lock = lock;
     }
 }
-

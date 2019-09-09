@@ -1,34 +1,77 @@
 package besquared.api.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * Appliance
  */
 @XStreamAlias("appliance")
-public class Appliance {
-
-    @XStreamAsAttribute
-    private String id;
+public class Appliance extends PlugwiseBaseModel implements PlugwiseComparableDate<Appliance> {
 
     private String name;
-
     private String description;
-
     private String type;
+    private String location;
 
-    private Logs logs;
+    @XStreamImplicit(itemFieldName = "point_log", keyFieldName = "type")
+    private Logs pointLogs = new Logs();
 
-    @XStreamAlias("actuator_functionalities")
-    private ActuatorFunctionalities actuatorFunctionalities;
+    @XStreamImplicit(itemFieldName = "actuator_functionality", keyFieldName = "type")
+    private ActuatorFunctionalities actuatorFunctionalities = new ActuatorFunctionalities();
 
-    @XStreamAlias("created_date")
-    private String createdDate;
+    public String getName() {
+        return name;
+    }
 
-    @XStreamAlias("modified_date")
-    private String modifiedDate;
+    public String getDescription() {
+        return description;
+    }
 
-    @XStreamAlias("deleted_date")
-    private String deletedDate;
+    public String getType() {
+        return type;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public Logs getPointLogs() {
+        return pointLogs;
+    }
+
+    public ActuatorFunctionalities getActuatorFunctionalities() {
+        return actuatorFunctionalities;
+    }
+
+    public Optional<Double> getSetpointTemperature() {
+        return this.pointLogs.getThermostatTemperature();
+    }
+
+    public Optional<Boolean> getRelayState() {
+        return this.pointLogs.getRelayState();
+    }
+
+    public Optional<Boolean> getRelayLockState() {
+        return this.actuatorFunctionalities.getRelayLockState();
+    }
+
+    @Override
+    public int compareDateWith(Appliance hasModifiedDate) {
+        return this.getModifiedDate().compareTo(hasModifiedDate.getModifiedDate());
+    }
+
+    @Override
+    public boolean isNewerThan(Appliance hasModifiedDate) {
+        return compareDateWith(hasModifiedDate) > 0;
+    }
+
+    @Override
+    public boolean isOlderThan(Appliance hasModifiedDate) {
+        return compareDateWith(hasModifiedDate) < 0;
+    }
 }
